@@ -6,6 +6,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 import static android.view.View.*;
 
@@ -13,10 +19,13 @@ import static android.view.View.*;
 public class MainActivity extends ActionBarActivity {
 
     // Variable Declarations
-    int daInteger;
-    boolean daBoolean;
     String daString;
-    String[] daStringArray;
+    ArrayList<String> daStringArray = new ArrayList<String>();
+    TextView name;
+    TextView age;
+    TextView desc1;
+    TextView desc2;
+    TextView desc3;
 
 
     @Override
@@ -27,7 +36,34 @@ public class MainActivity extends ActionBarActivity {
         Button button = (Button) findViewById(R.id.go_button);
         button.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-                daString = "Tell me dat I'm pretty";
+                name = (TextView) findViewById(R.id.name_textView);
+                age = (TextView) findViewById(R.id.age_textView);
+                desc1 = (TextView) findViewById(R.id.descript_text1);
+                desc2 = (TextView) findViewById(R.id.descript_text2);
+                desc3 = (TextView) findViewById(R.id.descript_text3);
+
+                if (name.getText().toString().equals("")) {
+                    name.setError("Enter Name");
+                }
+                if (age.getText().toString().equals("")) {
+                    age.setError("Enter Age");
+                }
+                if (desc1.getText().toString().equals("")) {
+                    desc1.setError("Enter Description");
+                }
+                if (desc2.getText().toString().equals("")) {
+                    desc2.setError("Enter Description");
+                }
+                if (desc3.getText().toString().equals("")) {
+                    desc3.setError("Enter Description");
+                }
+
+                if (!name.getText().toString().equals("") && !age.getText().toString().equals("") && !desc1.getText().toString().equals("") && !desc2.getText().toString().equals("") && !desc3.getText().toString().equals("")) {
+                    daStringArray.add(desc1.getText().toString());
+                    daStringArray.add(desc2.getText().toString());
+                    daStringArray.add(desc3.getText().toString());
+                    compileTextView();
+                }
             }
         });
     }
@@ -51,4 +87,17 @@ public class MainActivity extends ActionBarActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void compileTextView() {
+        Switch gender = (Switch) findViewById(R.id.gender_switch);
+
+        if (gender.isChecked()) {
+            daString = "Hey, my name is " + name.getText().toString() + " and I am " + age.getText().toString() + " years old. I am a " + desc1.getText().toString() + ", " + desc2.getText().toString() + ", and " + desc3.getText().toString() + " woman who would like your company." ;
+        } else {
+            daString = "Hello, my name is " + name.getText().toString() + " and I am " + age.getText().toString() + " years old. I am a " + desc1.getText().toString() + ", " + desc2.getText().toString() + ", and " + desc3.getText().toString() + " man who thinks you are amazing." ;
+        }
+
+        TextView finalText = (TextView) findViewById(R.id.final_textView);
+        finalText.setText(daString);
+    };
 }

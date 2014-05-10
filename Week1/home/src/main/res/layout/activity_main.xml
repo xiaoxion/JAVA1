@@ -17,7 +17,7 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2"
+            android:id="@+id/name_textView"
             android:layout_weight="1" />
 
     </LinearLayout>
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:inputType="number"
             android:ems="10"
-            android:id="@+id/editText" />
+            android:id="@+id/age_textView" />
 
     </LinearLayout>
 
@@ -51,10 +51,55 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sex:"
-            android:id="@+id/switch1"
+            android:id="@+id/gender_switch"
             android:checked="false"
             android:textOn="Female"
             android:textOff="Male"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Three words that describe you:"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/descript_text1"
+            android:layout_weight="1" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/descript_text2"
+            android:layout_weight="1" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/descript_text3"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make a Move!"
+        android:id="@+id/go_button"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/final_textView"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1" />
 
 </LinearLayout>
