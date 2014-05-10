@@ -1,6 +1,6 @@
 package com.stratazima.testapp.home;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,14 +9,12 @@ import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 import static android.view.View.*;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     // Variable Declarations
     String daString;
