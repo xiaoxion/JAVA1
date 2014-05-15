@@ -1,8 +1,7 @@
+package com.stratazima.testapp.home;
 /**
  * Created by Esau on 5/14/2014.
  */
-package com.stratazima.testapp.home;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -75,6 +74,7 @@ public class MainActivity extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Get data for object
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);

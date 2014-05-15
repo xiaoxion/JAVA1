@@ -54,6 +54,7 @@ public enum DateCreate {Week;
         return mainObj;
     }
 
+    // Check the date
     private int dateCheck (int theDate) {
         if(theDate > 7 ) {
             theDate = theDate - 7;
@@ -61,6 +62,7 @@ public enum DateCreate {Week;
         return theDate;
     }
 
+    // Set the date
     private String dayOfWeek (int intOfDate) {
         String DOW = null;
         switch (intOfDate) {

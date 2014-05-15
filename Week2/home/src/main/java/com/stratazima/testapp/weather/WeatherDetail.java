@@ -43,6 +43,7 @@ public class WeatherDetail extends Activity {
             e.printStackTrace();
         }
 
+        // Set date
         TextView date = (TextView) findViewById(R.id.textViewDate);
         date.setText(dateS);
 
