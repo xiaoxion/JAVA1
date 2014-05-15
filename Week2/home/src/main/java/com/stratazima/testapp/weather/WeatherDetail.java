@@ -21,8 +21,6 @@ public class WeatherDetail extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
         try {
             dayObj = new JSONObject(getIntent().getStringExtra("mainObject"));
         } catch (JSONException e) {
