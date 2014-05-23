@@ -9,4 +9,20 @@
     <string name="day">Today\'s Forecast:</string>
     <string name="night">Evening Forecast:</string>
 
+    <string name="accept">Okay</string>
+    <string name="decline">Continue Anyway</string>
+    <string name="continues">Continue</string>
+
+    <string name="state">State</string>
+    <string name="city">City</string>
+    <string name="getWeather">Go</string>
+
+    <string-array name="spinner_array">
+        <item>Today\'s Forecast</item>
+        <item>Two Day Forecast</item>
+        <item>Five Day Forecast</item>
+        <item>Weekly Forecast</item>
+        <item>Ten Day Forecast</item>
+    </string-array>
+
 </resources>

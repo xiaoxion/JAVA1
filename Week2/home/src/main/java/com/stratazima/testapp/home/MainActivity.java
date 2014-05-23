@@ -2,16 +2,20 @@ package com.stratazima.testapp.home;
 /**
  * Created by Esau on 5/14/2014.
  */
-import android.app.ListActivity;
-import android.content.Intent;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.*;
 import com.stratazima.testapp.weather.DateCreate;
-import com.stratazima.testapp.weather.WeatherDetail;
 import com.stratazima.testapp.weather.WeatherParse;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,21 +26,111 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MainActivity extends ListActivity {
+public class MainActivity extends Activity {
     public JSONArray mainObj;
     List<String> themList;
+    String Tag = "Main Activity";
+    String location;
+    boolean isConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Instantiate data
-        mainObj = DateCreate.Week.getDateObject();
-        WeatherParse letsParse = new WeatherParse();
-        mainObj = letsParse.getDateObject(mainObj);
+        // Check Data Connection
+        isConnected = isNetworkOnline();
+        if (!isConnected) {
+            onNoNetworkDialog("Need Network Connection/Error Reading Network");
+        }
 
-        ArrayList<String> tempArray = new ArrayList<String>();
+        onGetLocation();
+
+    }
+
+    public boolean isNetworkOnline() {
+        boolean status = false;
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null) {
+            if (netInfo.isConnected()) {
+                status= true;
+            }
+        }
+
+        return status;
+    }
+
+    public void onNoNetworkDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message)
+                .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.d(Tag, "Accepted");
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.decline, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Log.d(Tag, "Continued");
+                    }
+                });
+        // Create the AlertDialog object and return it
+        AlertDialog alertBuilder =  builder.create();
+        alertBuilder.show();
+    }
+
+    public void onWeatherPopUp(JSONObject dayObj) {
+
+        String dateS = null;
+        String highS = null;
+        String lowS = null;
+        String dayS = null;
+        String nightS = null;
+
+        try {
+            dateS = dayObj.getString("DayOfWeek");
+            highS = dayObj.getString("tempHigh");
+            lowS = dayObj.getString("tempLow");
+            dayS = dayObj.getString("todayDay");
+            nightS = dayObj.getString("todayNight");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Dialog alertBuilder = new Dialog(this);
+        alertBuilder.setTitle(dateS);
+        alertBuilder.setContentView(R.layout.item_dialog);
+
+        // Set dialog data
+        TextView high = (TextView) alertBuilder.findViewById(R.id.textViewHigh);
+        TextView low = (TextView) alertBuilder.findViewById(R.id.textViewLow);
+        TextView day = (TextView) alertBuilder.findViewById(R.id.textViewDay);
+        TextView night = (TextView) alertBuilder.findViewById(R.id.textViewNight);
+
+        high.setText(highS);
+        low.setText(lowS);
+        day.setText(dayS);
+        night.setText(nightS);
+
+        try {
+            alertBuilder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    private void onCreateList() {
+        // List Adapter
+        ArrayList < String > tempArray = new ArrayList<String>();
         for(int i = 0; i < mainObj.length(); i++)
             try {
                 JSONObject tempObject = mainObj.getJSONObject(i);
@@ -51,42 +145,97 @@ public class MainActivity extends ListActivity {
 
         // Create List Adapter
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, themList);
-        setListAdapter(listAdapter);
+        ListView daListView = (ListView) findViewById(R.id.list);
+        daListView.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                JSONObject tempObj = null;
+                try {
+                    tempObj = mainObj.getJSONObject(position);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                onWeatherPopUp(tempObj);
+            }
+        });
+        daListView.setAdapter(listAdapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private void onCreateSpinner () {
+        String[] listItems = getResources().getStringArray(R.array.spinner_array);
+
+        // Spinner Adapter
+        ArrayAdapter<String> arraySpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listItems);
+        arraySpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner daSpinner = (Spinner) findViewById(R.id.spinner);
+        daSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if (position == 0) {
+                    mainObj = DateCreate.TODAY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+                } else if (position == 1) {
+                    mainObj = DateCreate.TWO_DAY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+                } else if (position == 2) {
+                    mainObj = DateCreate.FIVE_DAY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+                } else if (position == 3) {
+                    mainObj = DateCreate.WEEKLY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+                } else if (position == 4) {
+                    mainObj = DateCreate.TEN_DAY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+                }
+                onCreateList();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+
+            }
+        });
+        daSpinner.setAdapter(arraySpinnerAdapter);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onGetLocation () {
+
+        Button button = (Button) findViewById(R.id.go);
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View arg0) {
+                EditText temporaryCity = (EditText) findViewById(R.id.cityText);
+                EditText temporaryState = (EditText) findViewById(R.id.stateText);
+                String tempCity = temporaryCity.getText().toString();
+                String tempState = temporaryState.getText().toString();
+
+                if (tempCity == "") {
+                    temporaryCity.setError("Enter City");
+                }
+
+                if (tempState == "") {
+                    temporaryState.setError("Enter State");
+                }
+                if (tempCity != "" && tempState != "") {
+                    tempCity = tempCity.trim();
+                    tempCity = tempCity.replace(" ", "_");
+
+                    location = tempState + "/" + tempCity + ".json";
+
+                    // Instantiate data
+                    mainObj = DateCreate.TODAY.getDateObject();
+                    WeatherParse letsParse = new WeatherParse();
+                    mainObj = letsParse.getDateObject(mainObj, isConnected, location);
+
+                    onCreateSpinner();
+                    onCreateList();
+                }
+                }
+            });
     }
 
-    // Get data for object
-    @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
-        Intent intent = new Intent(MainActivity.this, WeatherDetail.class);
-
-        JSONObject tempObj = null;
-        try {
-            tempObj = mainObj.getJSONObject(position);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        intent.putExtra("mainObject", tempObj.toString());
-        MainActivity.this.startActivity(intent);
-    }
 }
