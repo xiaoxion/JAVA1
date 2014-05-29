@@ -1,4 +1,5 @@
 package com.stratazima.testapp.home;
+
 /**
  * Created by Esau on 5/14/2014.
  */
@@ -16,7 +17,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.stratazima.testapp.weather.WeatherParse;
