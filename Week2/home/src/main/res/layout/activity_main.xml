@@ -40,7 +40,7 @@
             android:id="@+id/list"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/spinner"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="0dp"/>
     <ProgressBar
         android:id="@+id/daSpinner"
         style="?android:attr/progressBarStyleLarge"

@@ -16,6 +16,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.stratazima.testapp.weather.WeatherParse;
 import org.json.JSONArray;
@@ -211,8 +213,15 @@ public class MainActivity extends Activity {
         Button button = (Button) findViewById(R.id.go);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
+
+                final InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 final EditText temporaryCity = (EditText) findViewById(R.id.cityText);
                 final EditText temporaryState = (EditText) findViewById(R.id.stateText);
+                final ListView tempList = (ListView) findViewById(R.id.list);
+                final Spinner tempSpinner = (Spinner) findViewById(R.id.spinner);
+
+                inputMethodManager.hideSoftInputFromWindow(temporaryState.getWindowToken(), 0);
+
                 String tempCity = temporaryCity.getText().toString();
                 String tempState = temporaryState.getText().toString();
 
@@ -257,6 +266,8 @@ public class MainActivity extends Activity {
                 }
                 if (!tempCity.equals("") && !tempState.equals("")) {
                     progressBar.setVisibility(View.VISIBLE);
+                    tempList.setEnabled(false);
+                    tempSpinner.setEnabled(false);
 
                     tempCity = tempCity.trim();
                     tempCity = tempCity.replace(" ", "_");
@@ -276,8 +287,10 @@ public class MainActivity extends Activity {
                             progressBar.setVisibility(View.INVISIBLE);
                             onCreateSpinner();
                             onCreateList();
+                            tempList.setEnabled(true);
+                            tempSpinner.setEnabled(true);
                         }
-                    }, 2000);
+                    }, 1500);
                 }
                 }
             });
