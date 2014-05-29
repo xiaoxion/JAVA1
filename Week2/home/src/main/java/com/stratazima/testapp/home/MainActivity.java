@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.androidquery.AQuery;
 import com.stratazima.testapp.weather.WeatherParse;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,13 +86,15 @@ public class MainActivity extends Activity {
         alertBuilder.show();
     }
 
-    public void onWeatherPopUp(JSONObject dayObj) {
+    public void onWeatherPopUp(final JSONObject dayObj) {
 
+        AQuery aq = new AQuery(this);
         String dateS = null;
         String highS = null;
         String lowS = null;
         String dayS = null;
         String nightS = null;
+        String daIconURL = null;
 
         try {
             dateS = dayObj.getString("DayOfWeek");
@@ -99,6 +102,7 @@ public class MainActivity extends Activity {
             lowS = dayObj.getString("tempLow");
             dayS = dayObj.getString("todayDay");
             nightS = dayObj.getString("todayNight");
+            daIconURL = dayObj.getString("imageURL");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -112,11 +116,13 @@ public class MainActivity extends Activity {
         TextView low = (TextView) alertBuilder.findViewById(R.id.textViewLow);
         TextView day = (TextView) alertBuilder.findViewById(R.id.textViewDay);
         TextView night = (TextView) alertBuilder.findViewById(R.id.textViewNight);
+        ImageView iconImage = (ImageView) alertBuilder.findViewById(R.id.imageView);
 
         high.setText(highS);
         low.setText(lowS);
         day.setText(dayS);
         night.setText(nightS);
+        aq.id(iconImage).image(daIconURL);
 
         Button acceptButton = (Button) alertBuilder.findViewById(R.id.buttonOK);
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -295,4 +301,5 @@ public class MainActivity extends Activity {
                 }
             });
     }
+
 }
