@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,11 +33,14 @@ public class MainActivity extends Activity {
     String Tag = "Main Activity";
     String location;
     boolean isConnected;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = (ProgressBar) findViewById(R.id.daSpinner);
 
         // Check Data Connection
         isConnected = isNetworkOnline();
@@ -45,7 +49,6 @@ public class MainActivity extends Activity {
         }
 
         onGetLocation();
-
     }
 
     public boolean isNetworkOnline() {
@@ -253,6 +256,8 @@ public class MainActivity extends Activity {
                     });
                 }
                 if (!tempCity.equals("") && !tempState.equals("")) {
+                    progressBar.setVisibility(View.VISIBLE);
+
                     tempCity = tempCity.trim();
                     tempCity = tempCity.replace(" ", "_");
 
@@ -263,8 +268,16 @@ public class MainActivity extends Activity {
                     WeatherParse letsParse = new WeatherParse();
                     mainObj = letsParse.getDateObject(mainObj, isConnected, location);
 
-                    onCreateSpinner();
-                    onCreateList();
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            // Do something after 5s = 5000ms
+                            progressBar.setVisibility(View.INVISIBLE);
+                            onCreateSpinner();
+                            onCreateList();
+                        }
+                    }, 2000);
                 }
                 }
             });
