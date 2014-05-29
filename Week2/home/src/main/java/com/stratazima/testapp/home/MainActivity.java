@@ -11,11 +11,11 @@ import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.*;
-import com.stratazima.testapp.weather.DateCreate;
 import com.stratazima.testapp.weather.WeatherParse;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -98,7 +98,7 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
-        Dialog alertBuilder = new Dialog(this);
+        final Dialog alertBuilder = new Dialog(this);
         alertBuilder.setTitle(dateS);
         alertBuilder.setContentView(R.layout.item_dialog);
 
@@ -113,19 +113,19 @@ public class MainActivity extends Activity {
         day.setText(dayS);
         night.setText(nightS);
 
+        Button acceptButton = (Button) alertBuilder.findViewById(R.id.buttonOK);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertBuilder.dismiss();
+            }
+        });
+
         try {
             alertBuilder.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
     private void onCreateList() {
@@ -208,19 +208,51 @@ public class MainActivity extends Activity {
         Button button = (Button) findViewById(R.id.go);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-                EditText temporaryCity = (EditText) findViewById(R.id.cityText);
-                EditText temporaryState = (EditText) findViewById(R.id.stateText);
+                final EditText temporaryCity = (EditText) findViewById(R.id.cityText);
+                final EditText temporaryState = (EditText) findViewById(R.id.stateText);
                 String tempCity = temporaryCity.getText().toString();
                 String tempState = temporaryState.getText().toString();
 
-                if (tempCity == "") {
+                if (tempCity.equals("")) {
                     temporaryCity.setError("Enter City");
+                    temporaryCity.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                            temporaryCity.setError(null);
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
                 }
 
-                if (tempState == "") {
+                if (tempState.equals("")) {
                     temporaryState.setError("Enter State");
+                    temporaryState.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                            temporaryState.setError(null);
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+
+                        }
+                    });
                 }
-                if (tempCity != "" && tempState != "") {
+                if (!tempCity.equals("") && !tempState.equals("")) {
                     tempCity = tempCity.trim();
                     tempCity = tempCity.replace(" ", "_");
 
@@ -237,5 +269,4 @@ public class MainActivity extends Activity {
                 }
             });
     }
-
 }

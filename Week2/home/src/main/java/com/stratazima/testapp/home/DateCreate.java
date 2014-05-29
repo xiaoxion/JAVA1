@@ -1,10 +1,9 @@
-package com.stratazima.testapp.weather;
+package com.stratazima.testapp.home;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Esau on 5/15/2014.
