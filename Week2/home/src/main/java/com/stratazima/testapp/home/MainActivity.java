@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         String lowS = null;
         String dayS = null;
         String nightS = null;
-        String daIconURL = null;
+        String daIconURL;
 
         try {
             dateS = dayObj.getString("DayOfWeek");
@@ -102,7 +102,6 @@ public class MainActivity extends Activity {
             lowS = dayObj.getString("tempLow");
             dayS = dayObj.getString("todayDay");
             nightS = dayObj.getString("todayNight");
-            daIconURL = dayObj.getString("imageURL");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -118,11 +117,17 @@ public class MainActivity extends Activity {
         TextView night = (TextView) alertBuilder.findViewById(R.id.textViewNight);
         ImageView iconImage = (ImageView) alertBuilder.findViewById(R.id.imageView);
 
+        try {
+            daIconURL = dayObj.getString("imageURL");
+            aq.id(iconImage).image(daIconURL);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         high.setText(highS);
         low.setText(lowS);
         day.setText(dayS);
         night.setText(nightS);
-        aq.id(iconImage).image(daIconURL);
 
         Button acceptButton = (Button) alertBuilder.findViewById(R.id.buttonOK);
         acceptButton.setOnClickListener(new View.OnClickListener() {
